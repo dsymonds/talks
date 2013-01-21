@@ -1,0 +1,66 @@
+Go and protocol buffers
+A case study of API design
+19 Feb 2013
+
+David Symonds
+Software Engineer, Google
+dsymonds@golang.org
+
+* Overview
+
+- What are protocol buffers
+- Go's API for them
+- Design decisions
+
+* History
+
+Communicating servers often have different update schedules.
+
+        if (version == 3) {
+                ...
+        } else if (version > 4) {
+                if (version == 5) {
+                        ...
+                }
+                ...
+        }
+
+Hand-written parsers for protocols that change suck.
+
+* Protocol Buffers - IDL
+
+A `foo.proto` file defines messages.
+
+        message Phone {
+                enum Type {
+                        MOBILE = 1;
+                        HOME = 2;
+                        WORK = 3;
+                }
+                optional Type type = 1 [default = HOME];
+                required string number = 2;
+        }
+
+        message Person {
+                required string name = 1;
+                required int32 id = 2;
+                optional string email = 3;
+                repeated Phone phone = 4;
+        }
+
+
+* Protocol Buffers - IDL
+
+* Go API
+
+* Design
+
+TODO
+
+* Enums
+
+TODO
+
+* Getters
+
+TODO
