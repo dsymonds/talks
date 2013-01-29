@@ -33,6 +33,7 @@ Writing hand-written parsers for changing protocols sucks.
 - Compact, fast, relatively simple
 - Auto-generated parsing
 - Good for RPC messages
+- Heavily used at Google (over 60,000 .proto files)
 
 * Protocol Buffers - IDL
 
