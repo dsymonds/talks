@@ -107,3 +107,27 @@ A `foo.proto` file defines messages.
 * Design: getters
 
 TODO
+
+* Flash to the past: May 2009
+
+        package mytest
+
+        import _io_ "io"
+
+        type Request struct {
+          Key []int64  "PB(varint,1,rep)";
+          XXX_unrecognized *_io_.ByteBuffer;
+        }
+
+        var Default_Request Request
+        // TODO(r): use a method?
+        func (this *Request) Reset() *Request {
+          *this = Default_Request;
+          return this;
+        }
+        func (this *Request) Init() *Request {
+          return this;
+        }
+        func NewRequest() *Request {
+          return new(Request).Init();
+        }
