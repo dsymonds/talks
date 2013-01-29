@@ -25,7 +25,14 @@ Communicating servers often have different update schedules.
                 ...
         }
 
-Hand-written parsers for protocols that change suck.
+Writing hand-written parsers for changing protocols sucks.
+
+* Protocol Buffers
+
+- Extensible serialization mechanism
+- Compact, fast, relatively simple
+- Auto-generated parsing
+- Good for RPC messages
 
 * Protocol Buffers - IDL
 
@@ -49,18 +56,54 @@ A `foo.proto` file defines messages.
         }
 
 
-* Protocol Buffers - IDL
-
 * Go API
 
-* Design
+- Messages become structs
+- Required/optional fields become pointers to type
+- Repeated fields become slices
 
-TODO
+        type Phone struct {
+                Type   *Phone_Type `protobuf:"varint,1,opt,name=type,enum=Phone.Type" json:"type,omitempty"`
+                Number *string     `protobuf:"bytes,2,req,name=number" json:"number,omitempty"`
+        }
 
-* Enums
+        type Person struct {
+                Name  *string  `protobuf:"bytes,1,req,name=name" json:"name,omitempty"`
+                Id    *int32   `protobuf:"varint,2,req,name=id" json:"id,omitempty"`
+                Email *string  `protobuf:"bytes,3,opt,name=email" json:"email,omitempty"`
+                Phone []*Phone `protobuf:"bytes,4,rep,name=phone" json:"phone,omitempty"`
+        }
 
-TODO
+- Support library for marshaling/unmarshaling
 
-* Getters
+* Design: distinguishability of setness
+
+- Original design did not have pointers (and thus had good memory layout).
+- Protocol buffer semantics require fields to be set/unset => pointers.
+- There is some effort in support library to amortize cost.
+
+* Design: enums
+
+- Original design used int32, and generated untyped constants.
+- Easy to use the wrong constant.
+- Current design uses distinct types; compiler catches many errors.
+
+        type Phone_Type int32
+
+        const (
+                Phone_MOBILE Phone_Type = 1
+                Phone_HOME   Phone_Type = 2
+                Phone_WORK   Phone_Type = 3
+        )
+
+        var Phone_Type_name = map[int32]string{ ... }
+        var Phone_Type_value = map[string]int32{ ... }
+
+        func (x Phone_Type) Enum() *Phone_Type { ... }
+
+        func (x Phone_Type) String() string { ... }
+
+
+* Design: getters
 
 TODO
