@@ -12,6 +12,9 @@ dsymonds@golang.org
 - Go's API for them
 - Design decisions
 
+[[http://code.google.com/p/protobuf][code.google.com/p/protobuf]]
+[[http://code.google.com/p/goprotobuf][code.google.com/p/goprotobuf]]
+
 * History
 
 Communicating servers often have different update schedules.
@@ -75,19 +78,26 @@ A `foo.proto` file defines messages.
 		Phone []*Phone `protobuf:"bytes,4,rep,name=phone" json:"phone,omitempty"`
 	}
 
-- Support library for marshaling/unmarshaling
+- Support library for marshaling/unmarshaling, plus other operations
+
+* Design: struct tags
+
+- Early decision
+- Necessary metadata about message fields
+- Obvious alternative is to generate marshal/unmarshal methods; C++ does this, and is colossal bloat
+- Will likely disappear/shrink in the future (method to give `FileDescriptorProto`)
 
 * Design: distinguishability of setness
 
-- Original design did not have pointers (and thus had good memory layout).
-- Protocol buffer semantics require fields to be set/unset => pointers.
-- There is some effort in support library to amortize cost.
+- Original design did not have pointers (and thus had good memory layout)
+- Protocol buffer semantics require fields to be set/unset => pointers
+- There is some effort in support library to amortize allocation cost
 
 * Design: enums
 
-- Original design used int32, and generated untyped constants.
-- Easy to use the wrong constant.
-- Current design uses distinct types; compiler catches many errors.
+- Original design used int32, and generated untyped constants
+- Easy to use the wrong constant
+- Current design uses distinct types; compiler catches many errors
 
 	type Phone_Type int32
 
