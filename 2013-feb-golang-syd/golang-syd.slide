@@ -117,7 +117,29 @@ A `foo.proto` file defines messages.
 
 * Design: getters
 
-TODO
+Default values aren't zero values.
+
+	optional int32 foo = 1 [default = 7];
+
+	M{Foo: nil}            // foo's value is 7
+	M{Foo: proto.Int32(3)} // foo's value is 3
+
+Tedious and error prone to evaluate it manually.
+
+	x := pb.Default_M_Foo
+	if m.Foo != nil {
+		x = *m.Foo
+	}
+
+Solution: getters (compromise between ease of use and bloat)
+
+	// generated code
+	func (this *M) GetFoo() int32 {
+		if this != nil && this.Foo != nil {
+			return *this.Foo
+		}
+		return Default_M_Foo
+	}
 
 * Flash to the past: May 2009
 
