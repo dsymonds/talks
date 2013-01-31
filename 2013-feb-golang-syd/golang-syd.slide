@@ -16,14 +16,14 @@ dsymonds@golang.org
 
 Communicating servers often have different update schedules.
 
-        if (version == 3) {
-                ...
-        } else if (version > 4) {
-                if (version == 5) {
-                        ...
-                }
-                ...
-        }
+	if (version == 3) {
+		...
+	} else if (version > 4) {
+		if (version == 5) {
+			...
+		}
+		...
+	}
 
 Writing hand-written parsers for changing protocols sucks.
 
@@ -39,22 +39,22 @@ Writing hand-written parsers for changing protocols sucks.
 
 A `foo.proto` file defines messages.
 
-        message Phone {
-                enum Type {
-                        MOBILE = 1;
-                        HOME = 2;
-                        WORK = 3;
-                }
-                optional Type type = 1 [default = HOME];
-                required string number = 2;
-        }
+	message Phone {
+		enum Type {
+			MOBILE = 1;
+			HOME = 2;
+			WORK = 3;
+		}
+		optional Type type = 1 [default = HOME];
+		required string number = 2;
+	}
 
-        message Person {
-                required string name = 1;
-                required int32 id = 2;
-                optional string email = 3;
-                repeated Phone phone = 4;
-        }
+	message Person {
+		required string name = 1;
+		required int32 id = 2;
+		optional string email = 3;
+		repeated Phone phone = 4;
+	}
 
 
 * Go API
@@ -63,17 +63,17 @@ A `foo.proto` file defines messages.
 - Required/optional fields become pointers to type
 - Repeated fields become slices
 
-        type Phone struct {
-                Type   *Phone_Type `protobuf:"varint,1,opt,name=type,enum=Phone.Type" json:"type,omitempty"`
-                Number *string     `protobuf:"bytes,2,req,name=number" json:"number,omitempty"`
-        }
+	type Phone struct {
+		Type   *Phone_Type `protobuf:"varint,1,opt,name=type,enum=Phone.Type" json:"type,omitempty"`
+		Number *string     `protobuf:"bytes,2,req,name=number" json:"number,omitempty"`
+	}
 
-        type Person struct {
-                Name  *string  `protobuf:"bytes,1,req,name=name" json:"name,omitempty"`
-                Id    *int32   `protobuf:"varint,2,req,name=id" json:"id,omitempty"`
-                Email *string  `protobuf:"bytes,3,opt,name=email" json:"email,omitempty"`
-                Phone []*Phone `protobuf:"bytes,4,rep,name=phone" json:"phone,omitempty"`
-        }
+	type Person struct {
+		Name  *string  `protobuf:"bytes,1,req,name=name" json:"name,omitempty"`
+		Id    *int32   `protobuf:"varint,2,req,name=id" json:"id,omitempty"`
+		Email *string  `protobuf:"bytes,3,opt,name=email" json:"email,omitempty"`
+		Phone []*Phone `protobuf:"bytes,4,rep,name=phone" json:"phone,omitempty"`
+	}
 
 - Support library for marshaling/unmarshaling
 
@@ -89,20 +89,20 @@ A `foo.proto` file defines messages.
 - Easy to use the wrong constant.
 - Current design uses distinct types; compiler catches many errors.
 
-        type Phone_Type int32
+	type Phone_Type int32
 
-        const (
-                Phone_MOBILE Phone_Type = 1
-                Phone_HOME   Phone_Type = 2
-                Phone_WORK   Phone_Type = 3
-        )
+	const (
+		Phone_MOBILE Phone_Type = 1
+		Phone_HOME   Phone_Type = 2
+		Phone_WORK   Phone_Type = 3
+	)
 
-        var Phone_Type_name = map[int32]string{ ... }
-        var Phone_Type_value = map[string]int32{ ... }
+	var Phone_Type_name = map[int32]string{ ... }
+	var Phone_Type_value = map[string]int32{ ... }
 
-        func (x Phone_Type) Enum() *Phone_Type { ... }
+	func (x Phone_Type) Enum() *Phone_Type { ... }
 
-        func (x Phone_Type) String() string { ... }
+	func (x Phone_Type) String() string { ... }
 
 
 * Design: getters
@@ -111,24 +111,24 @@ TODO
 
 * Flash to the past: May 2009
 
-        package mytest
+	package mytest
 
-        import _io_ "io"
+	import _io_ "io"
 
-        type Request struct {
-          Key []int64  "PB(varint,1,rep)";
-          XXX_unrecognized *_io_.ByteBuffer;
-        }
+	type Request struct {
+	  Key []int64  "PB(varint,1,rep)";
+	  XXX_unrecognized *_io_.ByteBuffer;
+	}
 
-        var Default_Request Request
-        // TODO(r): use a method?
-        func (this *Request) Reset() *Request {
-          *this = Default_Request;
-          return this;
-        }
-        func (this *Request) Init() *Request {
-          return this;
-        }
-        func NewRequest() *Request {
-          return new(Request).Init();
-        }
+	var Default_Request Request
+	// TODO(r): use a method?
+	func (this *Request) Reset() *Request {
+	  *this = Default_Request;
+	  return this;
+	}
+	func (this *Request) Init() *Request {
+	  return this;
+	}
+	func NewRequest() *Request {
+	  return new(Request).Init();
+	}
