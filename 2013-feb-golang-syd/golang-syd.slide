@@ -40,7 +40,8 @@ Writing hand-written parsers for changing protocols sucks.
 
 * Protocol Buffers - IDL
 
-A `foo.proto` file defines messages.
+A `foo.proto` file defines messages. The protocol compiler (`protoc`)
+parses it and generates language-specific code.
 
 	message Phone {
 		enum Type {
@@ -79,6 +80,24 @@ A `foo.proto` file defines messages.
 	}
 
 - Support library for marshaling/unmarshaling, plus other operations
+
+* Go Use
+
+Composite literals work well.
+
+	p := &pb.Person{
+		Name:  proto.String("Andrew"),
+		Id:    proto.Int32(1337),
+		Phone: []*pb.Phone{
+			{
+				Type: pb.Phone_MOBILE.Enum(),
+				Number: proto.String("..."),
+			},
+			{
+				Number: proto.String("555-0133"),
+			},
+		},
+	}
 
 * Design: struct tags
 
