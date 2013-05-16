@@ -151,7 +151,7 @@ into
 * Concurrency III
 
 - Run queries concurrently
-- Easy way to speed up RPC-bound requests (and reduce variance)
+- Easy way to speed up RPC-bound requests
 
 .code concurrency.go /func parallel/+1,/^}/-1
 
@@ -217,3 +217,11 @@ Batching:
 - [[http://golang.org][golang.org]]
 - [[http://developers.google.com/appengine/docs/go/][developers.google.com/appengine/docs/go/]]
 - [[http://golang.org/s/io13-ae-talk][golang.org/s/io13-ae-talk]] (this talk, plus gophermart app)
+- [[http://github.com/mjibson/appstats][github.com/mjibson/appstats]]
+
+More Go things:
+
+- _Go_in_Production_ (_office_hours_), 3:30PM-4:15PM, Cloud Sandbox
+- _Advanced_Go_Concurrency_Patterns_, 4:25PM, Room 7
+- _Fireside_Chat_with_the_Go_Team_, 5:20PM, Room 2
+- _Go_App_Engine_ (_office_hours_), 1:45PM-2:30PM *tomorrow*, Cloud Sandbox
