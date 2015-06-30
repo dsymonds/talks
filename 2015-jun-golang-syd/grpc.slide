@@ -1,0 +1,107 @@
+gRPC
+A high performance, open source, general RPC framework
+24 Jun 2015
+
+David Symonds
+Software Engineer, Google
+dsymonds@golang.org
+
+* Overview
+
+- What is gRPC?
+- How do I use it in Go?
+- Request tracing
+
+* What is gRPC?
+
+.image images/grpc.svg _ 300
+
+- Open source RPC framework (3-clause BSD)
+- Libraries in 10 languages
+- Built on HTTP/2
+- Fast, lightweight
+- Unary and bidirectional streaming
+- Messages are protocol buffers by default, but can be overridden
+- Based on Google's internal RPC framework, Stubby
+- [[http://www.grpc.io/][grpc.io]]
+
+* How do I use it in Go?
+
+Define your service in a `.proto` file:
+
+	service GoNuts {
+		rpc AskQuestion(Question) returns (Answer) {}
+		rpc SuggestLanguageChange(Change) returns (stream Opinion) {}
+		rpc Argue(stream Mail) returns (stream Mail) {}
+	}
+
+Generate `.pb.go` file:
+
+	protoc --go_out=plugins=grpc:. path/to/foo.proto
+
+Go ahead and poke around in the `.pb.go` file. It's designed to be readable.
+
+* How do I use it in Go?
+
+Make a server
+
+	import "google.golang.org/grpc"
+	import "golang.org/x/net/context"
+	import pb "path/to/foo_proto" // from previous slide
+ 
+	// myServer implements the pb.GoNutsServer interface.
+	type myServer struct {
+	}
+
+	func (m myServer) AskQuestion(ctx context.Context, in *pb.Question) (*pb.Answer, error) {
+	}
+ 
+	lis, err := net.Listen(...)
+	...
+	srv := grpc.NewServer()
+	x := myServer{}
+	pb.RegisterGoNutsServer(srv, x)
+	srv.Serve(lis)
+
+* How do I use it in Go?
+
+Make a client
+
+	import "google.golang.org/grpc"
+	import "golang.org/x/net/context"
+	import pb "path/to/foo_proto" // from previous slide
+ 
+	conn, err := grpc.Dial(addr)
+	...
+	client := pb.NewGoNutsClient(conn)
+	// client is of type pb.GoNutsClient, an interface
+
+	go http.ListenAndServe("localhost:10001", nil) // I'll explain this later
+ 
+	ch := &pb.Change{Category: "generics"}
+	stream, err := client.SuggestLanguageChange(ctx, ch)
+	...
+	for {
+		opinion, err := stream.Recv()
+		if err == io.EOF { break }
+		...
+	}
+
+* Wouldn't it be neat to be able to see what's going on?
+
+Yeah, it would.
+
+Wait ...
+
+* /debug/requests
+
+	golang.org/x/net/trace
+
+Integrated with gRPC on the client side:
+
+.image images/requests.png _ 1000
+
+* Summary
+
+- [[http://www.grpc.io/][grpc.io]]
+- golang.org/x/net/trace
